@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>WatchParty – Live Chat for Live Sports</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <!-- Replace with your real logo path if you want -->
+      <div class="logo-quad" aria-hidden="true">
+        <div class="q q1"></div><div class="q q2"></div>
+        <div class="q q3"></div><div class="q q4"></div>
+      </div>
+      <div class="brand-text">
+        <h1>WatchParty</h1>
+        <p>Live Chat for Live Sports</p>
+      </div>
+    </div>
+    <div class="health">
+      <span id="health-dot" class="dot dot-gray"></span>
+      <span id="health-text">Checking server…</span>
+    </div>
+  </header>
+
+  <main class="wrapper">
+    <section class="card">
+      <h2>Check a Game URL</h2>
+      <p>Paste an ESPN, Peacock, or Prime Video game URL. We’ll tell you if it’s supported and show the room ID your extension uses.</p>
+      <div class="row">
+        <input id="urlInput" type="url" placeholder="https://www.espn.com/nba/game/_/gameId/401809510/celtics-magic" />
+        <button id="checkBtn">Check</button>
+      </div>
+
+      <div id="result" class="result hidden">
+        <div class="kv">
+          <div>Platform</div><div id="platformVal">–</div>
+        </div>
+        <div class="kv">
+          <div>Derived roomId</div><div id="roomVal" class="mono">–</div>
+        </div>
+        <div class="actions">
+          <a id="openLink" class="btn btn-primary" target="_blank" rel="noopener">Open game</a>
+          <button id="copyParam" class="btn">Copy <code>?wpRoom=…</code> override</button>
+          <div class="hint">The override lets you force the overlay anywhere for testing if the extension is installed.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Currently Supported</h2>
+      <ul class="bullets">
+        <li><strong>ESPN (games):</strong> <code>/&lt;league&gt;/game/_/gameId/&lt;id&gt;</code></li>
+        <li><strong>ESPN (Watch player):</strong> <code>/watch/player/_/id/&lt;uuid&gt;</code></li>
+        <li><strong>Peacock (live):</strong> <code>/watch/playback/live/&lt;digits&gt;</code></li>
+        <li><strong>Prime Video:</strong> <code>/gp/video/detail/&lt;alphanum&gt;</code></li>
+      </ul>
+      <p class="subtle">Tip: if a page is supported and the extension is installed, the chat overlay should appear automatically.</p>
+    </section>
+
+    <section class="card">
+      <h2>Quick Server Settings (optional)</h2>
+      <p>If you run a custom server, set it here so the checker and your <code>?ws=</code> popout URLs match.</p>
+      <div class="row">
+        <input id="wsInput" type="text" placeholder="wss://watchparty-4u9v.onrender.com" />
+        <button id="saveWs">Save</button>
+        <button id="resetWs" class="btn-light">Reset</button>
+      </div>
+      <div class="subtle">Current: <code id="wsCurrent">–</code></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> WatchParty</span>
+  </footer>
+
+  <script src="./assets/app.js"></script>
+</body>
+</html>
