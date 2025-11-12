@@ -7,6 +7,7 @@ async function loadGames() {
   try {
     const res = await fetch(`${API_BASE}/games`);
     const games = await res.json();
+    console.log(games);
 
     if (!games.length) {
       list.innerHTML = `<p class="loading">No live games right now.</p>`;
