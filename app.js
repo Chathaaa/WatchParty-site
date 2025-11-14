@@ -68,6 +68,22 @@ document.querySelector(".highlight")?.addEventListener("click", () => {
   textBox.focus();
 });
 
+const footerFeedback = document.getElementById("footer-feedback");
+
+footerFeedback?.addEventListener("click", (e) => {
+  e.preventDefault(); // prevent the "#" link jump
+
+  if (!modal) return;
+  modal.classList.remove("hidden");
+
+  if (textBox) {
+    textBox.value = "";
+    textBox.focus();
+  }
+
+  if (statusMsg) statusMsg.textContent = "";
+});
+
 // Close modal
 closeBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
