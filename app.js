@@ -6,10 +6,11 @@ async function loadGames() {
 
   try {
     const res = await fetch(`${API_BASE}/games`);
-    const games = await res.json();
+    const data = await res.json();
+    const games = data.games || [];
     console.log(games);
 
-    if (!games.length) {
+    if (games.length === 0) {
       list.innerHTML = `<p class="loading">No live games right now.</p>`;
       return;
     }
@@ -18,11 +19,28 @@ async function loadGames() {
     games.forEach(g => {
       const div = document.createElement("div");
       div.className = "game-item";
+
+      const title =
+        g.title ||
+        (g.home && g.away ? `${g.home} vs ${g.away}` : "Live game");
+
+      const platform = g.platform || g.site || "";
+      const league   = g.league || "";
+
       div.innerHTML = `
-        <strong>${g.league.toUpperCase()}</strong><br>
-        ${g.title}<br>
-        <small>Room: ${g.roomId}</small>
+        <div class="game-main">
+          <div class="game-title">${title}</div>
+          ${
+            platform || league
+              ? `<div class="game-meta">${[league, platform].filter(Boolean).join(" · ")}</div>`
+              : ""
+          }
+        </div>
+        <div class="game-room">
+          <small>Room: <code>${g.roomId}</code></small>
+        </div>
       `;
+
       list.appendChild(div);
     });
 
@@ -34,3 +52,51 @@ async function loadGames() {
 
 loadGames();
 setInterval(loadGames, 60000); // refresh every minute
+
+// --- Feedback Modal ---
+const modal = document.getElementById("feedback-modal");
+const sendBtn = document.getElementById("feedback-send");
+const closeBtn = document.getElementById("feedback-close");
+const textBox = document.getElementById("feedback-text");
+const statusMsg = document.getElementById("feedback-status");
+
+// Triggered when user clicks "Tell us"
+document.querySelector(".highlight")?.addEventListener("click", () => {
+  modal.classList.remove("hidden");
+  textBox.value = "";
+  statusMsg.textContent = "";
+  textBox.focus();
+});
+
+// Close modal
+closeBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+// Send feedback to backend
+sendBtn.addEventListener("click", async () => {
+  const message = textBox.value.trim();
+  if (!message) return;
+
+  statusMsg.textContent = "Sending...";
+
+  try {
+    await fetch("https://watchparty-4u9v.onrender.com/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    statusMsg.textContent = "Thanks! Got it.";
+
+    // auto-close after short delay
+    setTimeout(() => {
+      modal.classList.add("hidden");
+    }, 800);
+
+  } catch (error) {
+    console.error(error);
+    statusMsg.textContent = "Error sending. Try again.";
+  }
+});
+

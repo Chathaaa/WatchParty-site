@@ -1,55 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ENYX7KSW1Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ENYX7KSW1Z');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatchParty – Live Chat for Live Sports</title>
 
   <meta name="description" content="Watch games together. Real-time chat overlay for ESPN, Peacock, and Prime Video.">
-  <link rel="stylesheet" href="style.css">
 
+  <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="assets/logo.png">
 
-  <!-- Social Previews -->
+  <!-- Open Graph / Social -->
   <meta property="og:title" content="WatchParty – Live Chat for Live Sports">
-  <meta property="og:description" content="Chat with other fans directly on ESPN, Peacock, and Prime Video.">
+  <meta property="og:description" content="Turn any game into a watch party. Real-time chat overlay for ESPN, Peacock, and Prime Video.">
   <meta property="og:image" content="assets/promo-marquee.png">
   <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WatchParty – Live Chat for Live Sports">
+  <meta name="twitter:description" content="Twitch-style chat overlay for your favorite sports streams.">
+  <meta name="twitter:image" content="assets/promo-marquee.png">
 </head>
 
 <body>
+  <div class="page">
 
-  <header class="header">
-    <img src="assets/Marquee promo tile.png" alt="WatchParty Logo" class="promo-tile">
-  </header>
+    <!-- HERO -->
+    <header class="header">
+      <!-- Brand bar -->
+      <div class="nav-bar">
+        <div class="nav-left">
+          <img src="assets/logo.png" alt="WatchParty logo" class="nav-logo">
+          <span class="nav-title">WatchParty</span>
+        </div>
+        <a class="nav-link" href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">
+          Add to Chrome
+        </a>
+      </div>
+      <div class="hero">
+        <div class="hero-copy">
+          <h1 class="hero-title">Watch sports together — anywhere</h1>
+          <p class="hero-subtitle">
+            WatchParty adds a real-time chat overlay to live games on ESPN, Peacock, and Prime Video.
+            Every game gets one shared chat room for everyone watching with WatchParty.
+          </p>
 
-  <section class="cta">
-    <a class="cta-btn" href="https://chromewebstore.google.com/detail/YOUR_ID_HERE">
-      Add to Chrome
-    </a>
-  </section>
+          <div class="hero-actions">
+            <a class="cta-btn primary" href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">
+              🚀 Add WatchParty to Chrome
+            </a>
+            <a class="cta-btn secondary" href="#how-it-works">
+              ▶️ See how it works
+            </a>
+          </div>
 
-  <section class="games">
-    <h2>Live Games Right Now</h2>
-    <div id="games-list" class="games-list">
-      <p class="loading">Checking for live games…</p>
-    </div>
-  </section>
+          <p class="hero-note">
+            No signup required. Install, open a game, and the chat room for that game appears automatically.
+          </p>
+        </div>
 
-  <section class="how-it-works">
-    <h2>How it Works</h2>
-    <ul>
-      <li>Install the extension</li>
-      <li>Visit a supported game on ESPN, Peacock, or Prime Video</li>
-      <li>WatchParty automatically appears on the video</li>
-      <li>Chat with other fans in real time</li>
-    </ul>
-  </section>
+        <div class="hero-media">
+          <div class="hero-device">
+            <img
+              src="assets/hero-overlay.png"
+              alt="WatchParty chat overlay on a live sports stream"
+              class="hero-img"
+            />
+          </div>
+          <p class="hero-caption">
+            Example of WatchParty running on an Amazon Prime game.
+          </p>
+        </div>
+      </div>
+    </header>
 
-  <footer class="footer">
-    <p>© 2025 WatchParty</p>
-  </footer>
+    <!-- LIVE GAMES (driven by app.js) -->
+    <section class="section games" id="live-games">
+      <div class="section-inner">
+        <h2>Live games right now</h2>
+        <p class="section-tagline">
+          These are the games currently detected by WatchParty. Open one with the extension installed to join the shared chat for that game.
+        </p>
+        <div id="games-list" class="games-list">
+          <p class="loading">Checking for live games…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section how-it-works" id="how-it-works">
+      <div class="section-inner">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-label">1. Install the extension</span>
+            <span class="step-text">Add WatchParty from the Chrome Web Store in a couple of clicks.</span>
+          </li>
+          <li>
+            <span class="step-label">2. Open a live game</span>
+            <span class="step-text">Visit a supported game on ESPN, Peacock, or Prime Video.</span>
+          </li>
+          <li>
+            <span class="step-label">3. Your chat overlay appears</span>
+            <span class="step-text">WatchParty attaches a chat room to that specific game, right on the page.</span>
+          </li>
+          <li>
+            <span class="step-label">4. Invite friends</span>
+            <span class="step-text">Tell your friends to open the same game with WatchParty installed and you'll all be in the same chat.</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SUPPORTED SITES -->
+    <section class="section supported">
+      <div class="section-inner">
+        <h2>Supported sites</h2>
+        <p class="section-tagline">
+          Starting with the most popular places fans already watch.
+        </p>
+        <div class="supported-grid">
+          <div class="pill">ESPN</div>
+          <div class="pill">Amazon Prime Video</div>
+          <div class="pill">Peacock</div>
+          <div class="pill pill-soon">More coming soon</div>
+        </div>
+        <p class="section-note">
+          Want support for another site? <span class="highlight">Tell us</span> and it might be next.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHY WATCHPARTY -->
+    <section class="section why">
+      <div class="section-inner">
+        <h2>Why WatchParty?</h2>
+        <div class="why-grid">
+          <div class="why-item">
+            <h3>Feels like Twitch chat</h3>
+            <p>Real-time messages, emotes, and reactions — but on the sites you already use.</p>
+          </div>
+          <div class="why-item">
+            <h3>No separate player</h3>
+            <p>Watch on the official stream. WatchParty is just an overlay on top.</p>
+          </div>
+          <div class="why-item">
+            <h3>One room per game</h3>
+            <p>
+              Each supported game has a single shared chat room. If you're watching that game with WatchParty,
+              you're in the same conversation as everyone else.
+            </p>
+          </div>
+          <div class="why-item">
+            <h3>Built for fans</h3>
+            <p>Fast, lightweight, and focused on making game nights more fun.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUNITY / FOOTER -->
+    <section class="section community">
+      <div class="section-inner">
+        <h2>Join the early fans</h2>
+        <p class="section-tagline">
+          WatchParty is in early release. Help shape what it becomes.
+        </p>
+        <div class="community-actions">
+          <!-- Replace with your real Discord/feedback links when ready -->
+          <a class="cta-btn secondary" href="#" target="_blank" rel="noopener">
+            💬 Join the Discord (soon)
+          </a>
+          <a class="cta-btn ghost" href="mailto:hello@example.com">
+            ✉️ Send feedback
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>© 2025 WatchParty – Live Chat for Live Sports</p>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
+
+  <!-- Feedback Modal -->
+  <div id="feedback-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Request a New Site</h3>
+      <p class="modal-sub">
+        Tell us which streaming site you’d like WatchParty to support next.
+      </p>
+
+      <textarea id="feedback-text" class="modal-input" placeholder="ESPN+, Paramount+, Bally Sports, etc."></textarea>
+
+      <div class="modal-actions">
+        <button id="feedback-send" class="cta-btn primary">Send</button>
+        <button id="feedback-close" class="cta-btn ghost">Cancel</button>
+      </div>
+
+      <p id="feedback-status" class="modal-status"></p>
+    </div>
+  </div>
+
 </body>
 </html>
