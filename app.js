@@ -96,6 +96,8 @@ async function loadGames() {
 
       const chatUrl = `${CHAT_BASE}?room=${encodeURIComponent(g.roomId)}`;
 
+      const div = document.createElement("div");
+
       div.innerHTML = `
         <div class="game-main">
           <div class="game-title">${label}</div>
