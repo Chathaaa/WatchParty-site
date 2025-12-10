@@ -90,6 +90,15 @@
       gap: 12px;
       min-height: 0;
     }
+    .room-game-link {
+        color: #93c5fd;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .room-game-link:hover {
+        text-decoration: underline;
+    }
 
     /* Chat shell */
     #watchparty-shell {
@@ -330,9 +339,66 @@
     }
 
     .room-footer-hint {
-      margin-top: 6px;
-      font-size: 0.78rem;
-      color: #6b7280;
+        margin-top: 10px;
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        color: #9ca3af;
+        background: rgba(15, 23, 42, 0.95);
+        border-radius: 10px;
+        border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .hint-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #e5e7eb;
+        margin-bottom: 4px;
+    }
+
+    .hint-steps {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .hint-steps li {
+        margin-bottom: 4px;
+    }
+
+    .hint-steps a {
+        color: #93c5fd;
+        text-decoration: none;
+    }
+
+    .hint-steps a:hover {
+        text-decoration: underline;
+    }
+    .hint-invite {
+        margin-top: 8px;
+        padding-top: 6px;
+        border-top: 1px solid rgba(55, 65, 81, 0.6);
+        font-size: 0.78rem;
+        color: #a1a1aa;
+    }
+
+    .hint-invite strong {
+        color: #d4d4d8;
+    }
+
+    .copy-room-btn {
+        margin-top: 6px;
+        padding: 6px 12px;
+        font-size: 0.78rem;
+        border-radius: 6px;
+        border: 1px solid #374151;
+        background: #1e293b;
+        color: #e5e7eb;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .copy-room-btn:hover {
+        background: #283449;
+        border-color: #4b5563;
     }
 
     @media (max-width: 640px) {
@@ -352,7 +418,7 @@
     <header class="room-header">
       <div class="room-header-left">
         <img src="assets/Logo.png" alt="WatchParty logo" class="room-logo">
-        <span class="room-title">WatchParty – Game Chat</span>
+        <span class="room-title">WatchParty - Game Chat</span>
       </div>
       <div class="room-header-right">
         <a href="index.html" class="cta-btn ghost" style="padding: 6px 12px; font-size: 0.8rem;">
@@ -364,6 +430,10 @@
     <main class="room-main">
       <div class="room-meta">
         <div>Room ID: <span id="room-id" class="room-id"></span></div>
+        <div id="game-link-row" style="margin-top:4px; display:none;">
+            Game page:
+            <a id="game-link" class="room-game-link" href="#" target="_blank" rel="noopener"></a>
+        </div>
       </div>
 
       <div class="room-layout">
@@ -371,7 +441,28 @@
           <div id="root"></div>
         </div>
         <div class="room-footer-hint">
-          Open the same game on ESPN / Peacock / Prime with the extension installed to see this chat as an overlay.
+            <div class="hint-title">How to use this room</div>
+            <ol class="hint-steps">
+                <li>
+                <strong>Install the WatchParty Chrome extension</strong>
+                <!-- <span> (from your browser's extension store).</span> -->
+                <!-- Optional: add your direct link instead -->
+                <a href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">Install extension ↗</a>
+                </li>
+                <li>
+                <strong>Click "Open on ESPN / Peacock / Prime Video" above</strong> to go to the game page.
+                </li>
+                <li>
+                <strong>Keep this chat open while you watch</strong> - the same room will appear as an overlay on the video.
+                </li>
+            </ol>
+            <div class="hint-invite">
+                <div>
+                    🔗 <strong>Invite friends:</strong> share this page’s link — anyone can join the chat without installing anything.
+                </div>
+
+                <button id="copy-room-link" class="copy-room-btn">Copy room link</button>
+            </div>
         </div>
       </div>
     </main>
@@ -389,8 +480,128 @@
         roomIdEl.textContent = roomId;
       }
 
+
+      function describeRoom(roomId) {
+        let platform = "WatchParty";
+        let label = roomId;
+        let url = null;
+
+        // ESPN league / event / watch pages: espn-nba-401809510, espn-event-123, espn-watch-...
+        if (roomId.startsWith("espn-")) {
+        const parts = roomId.split("-");
+        // espn-watch-<id...>
+        if (parts[1] === "watch") {
+            platform = "ESPN Watch";
+            const id = parts.slice(2).join("-");
+            label = `ESPN Watch stream ${id}`;
+            url = `https://www.espn.com/watch/player/_/id/${encodeURIComponent(id)}`;
+        }
+        // espn-event-<digits>
+        else if (parts[1] === "event") {
+            platform = "ESPN";
+            const eventId = parts[2];
+            label = `ESPN event ${eventId}`;
+            url = `https://www.espn.com/watch/player/_/eventId/${encodeURIComponent(eventId)}`;
+        }
+        // espn-<league>-<gameId> e.g. espn-nba-401809510
+        else if (parts.length >= 3) {
+            const league = parts[1].toLowerCase();
+            const gameId = parts[2];
+            platform = "ESPN";
+            label = `${league.toUpperCase()} game ${gameId}`;
+            url = `https://www.espn.com/${encodeURIComponent(
+            league
+            )}/game/_/gameId/${encodeURIComponent(gameId)}`;
+        }
+        }
+        // Peacock live: peacock-live-<id>
+        else if (roomId.startsWith("peacock-live-")) {
+        platform = "Peacock";
+        const id = roomId.slice("peacock-live-".length);
+        label = `Peacock live channel ${id}`;
+        url = `https://www.peacocktv.com/watch/playback/live/${encodeURIComponent(
+            id
+        )}`;
+        }
+        // Prime Video: prime-<id>
+        else if (roomId.startsWith("prime-")) {
+        platform = "Prime Video";
+        const id = roomId.slice("prime-".length);
+        label = `Prime Video title ${id}`;
+        url = `https://www.amazon.com/gp/video/detail/${encodeURIComponent(id)}`;
+        }
+
+        return { platform, label, url };
+       }
+
+      // Copy room link button
+        (function setupCopyRoomLink() {
+        const btn = document.getElementById("copy-room-link");
+        if (!btn) return;
+
+        const shareUrl = window.location.href;
+
+        function fallbackCopy(text) {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try { document.execCommand("copy"); } catch {}
+            document.body.removeChild(ta);
+        }
+
+        function showCopiedMessage() {
+            // If chat has loaded, show a system message in the chat window
+            const messagesEl = document.getElementById("wp-messages");
+            if (messagesEl) {
+            const row = document.createElement("div");
+            row.className = "wp-message";
+            const span = document.createElement("span");
+            span.className = "wp-system";
+            span.textContent = "Room link copied to clipboard!";
+            row.appendChild(span);
+            messagesEl.appendChild(row);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            } else {
+            // Fallback: alert
+            alert("Link copied!");
+            }
+        }
+
+        btn.addEventListener("click", () => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl)
+                .then(showCopiedMessage)
+                .catch(() => {
+                fallbackCopy(shareUrl);
+                showCopiedMessage();
+                });
+            } else {
+            fallbackCopy(shareUrl);
+            showCopiedMessage();
+            }
+        });
+        })();
+ 
+
       // Point directly at your Render server
       const WS_BASE = "wss://watchparty-4u9v.onrender.com";
+
+      // Hook up "Open game" link if we can derive a URL
+        const gameLinkRow = document.getElementById("game-link-row");
+        const gameLinkEl = document.getElementById("game-link");
+
+        if (roomId && gameLinkRow && gameLinkEl) {
+            const { platform, url } = describeRoom(roomId);
+            if (url) {
+            gameLinkRow.style.display = "block";
+            gameLinkEl.href = url;
+            gameLinkEl.textContent = platform ? `Open on ${platform}` : "Open game";
+            }
+        }
 
       const DEFAULT_EMOTES = [
         { code: "catJAM", url: "https://cdn.betterttv.net/emote/5f1b0186cf6d2144653d2970/2x" },
@@ -402,7 +613,21 @@
         { code: "POGGERS", url: "https://cdn.betterttv.net/emote/58ae8407ff7b7276f8e594f2/2x" },
         { code: "PepeHands", url: "https://cdn.betterttv.net/emote/59f27b3f4ebd8047f54dee29/2x" },
         { code: "pepeJAM", url: "https://cdn.betterttv.net/emote/5b77ac3af7bddc567b1d5fb2/2x" },
-        { code: "Sadge", url: "https://cdn.betterttv.net/emote/5df2e1e28a7cdd1d43675a3b/2x" }
+        { code: "Sadge", url: "https://cdn.betterttv.net/emote/5e0fa9d40550d42106b8a489/2x" },
+        { code: "Pepega", url: "https://cdn.betterttv.net/emote/5aca62163e290877a25481ad/2x" },
+        { code: "pepeD", url: "https://cdn.betterttv.net/emote/5b1740221c5a6065a7bad4b5/2x" },
+        { code: "PogU", url: "https://cdn.betterttv.net/emote/5e4e7a1f08b4447d56a92967/2x" },
+        { code: "PepeLaugh", url: "https://cdn.betterttv.net/emote/5c548025009a2e73916b3a37/2x" },
+        { code: "5Head", url: "https://cdn.betterttv.net/emote/5d6096974932b21d9c332904/2x" },
+        { code: "PepePls", url: "https://cdn.betterttv.net/emote/55898e122612142e6aaa935b/2x" },
+        { code: "modCheck", url: "https://cdn.betterttv.net/emote/5d7eefb7c0652668c9e4d394/2x" },
+        { code: "monkaW", url: "https://cdn.betterttv.net/emote/59ca6551b27c823d5b1fd872/2x" },
+        { code: "peepoLeave", url: "https://cdn.betterttv.net/emote/5d324913ff6ed36801311fd2/2x" },
+        { code: "weirdChamp", url: "https://cdn.betterttv.net/emote/5d20a55de1cfde376e532972/2x" },
+        { code: "BOOBA", url: "https://cdn.betterttv.net/emote/5fa99424eca18f6455c2bca5/2x" },
+        { code: "LULW", url: "https://cdn.betterttv.net/emote/5dc79d1b27360247dd6516ec/2x" },
+        { code: "FeelsStrongMan", url: "https://cdn.betterttv.net/emote/58facc4aaffae60eac088397/2x" },
+        { code: "AYAYA", url: "https://cdn.betterttv.net/emote/58493695987aab42df852e0f/2x" }
       ];
 
       const EMOTE_KEY = "watchparty_emotes";
