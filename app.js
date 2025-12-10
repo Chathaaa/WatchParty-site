@@ -1,4 +1,6 @@
 const API_BASE = "https://watchparty-4u9v.onrender.com";
+const CHAT_BASE = "https://chathaaa.github.io/WatchParty-site/room.html";
+
 
 // Turn a roomId into { platform, label, url }
 function describeRoom(roomId) {
@@ -92,25 +94,25 @@ async function loadGames() {
 
       const metaText = metaBits.join(" · ");
 
-      const div = document.createElement("div");
-      div.className = "game-item";
+      const chatUrl = `${CHAT_BASE}?room=${encodeURIComponent(g.roomId)}`;
+
       div.innerHTML = `
         <div class="game-main">
           <div class="game-title">${label}</div>
-          ${
-            metaText
-              ? `<div class="game-meta">${metaText}</div>`
-              : ""
-          }
+          ${metaText ? `<div class="game-meta">${metaText}</div>` : ""}
         </div>
         <div class="game-room">
-          ${
-            url
-              ? `<a class="cta-btn secondary game-link" href="${url}" target="_blank" rel="noopener">Open game ↗</a>`
-              : `<small>Room: <code>${g.roomId}</code></small>`
+          ${url
+            ? `<a class="cta-btn secondary game-link" href="${url}" target="_blank" rel="noopener">Open game ↗</a>`
+            : ``
           }
+          <a class="cta-btn ghost game-link" href="${chatUrl}" target="_blank" rel="noopener">
+            Open chat 💬
+          </a>
+          ${!url ? `<div style="margin-top:4px;"><small>Room: <code>${g.roomId}</code></small></div>` : ""}
         </div>
       `;
+
 
       list.appendChild(div);
     });

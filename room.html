@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WatchParty Chat Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Reuse your main styles for brand + buttons -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/Logo.png">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: radial-gradient(circle at top, #020617 0, #000 60%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", Arial, sans-serif;
+      color: #e5e7eb;
+    }
+
+    .room-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .room-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.8);
+      background: rgba(15, 23, 42, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .room-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .room-logo {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+    }
+
+    .room-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .room-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .room-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 16px 16px;
+    }
+
+    .room-meta {
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .room-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: #e5e7eb;
+    }
+
+    .room-layout {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    /* Chat shell */
+    #watchparty-shell {
+      flex: 1;
+      min-height: 0;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #watchparty-overlay {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 14px;
+    }
+
+    .wp-header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: #0f172a;
+      border-bottom: 1px solid #1f2937;
+      user-select: none;
+    }
+
+    .wp-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wp-logo {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: #111827;
+    }
+
+    .wp-brand {
+      font-weight: 600;
+      color: #e5e7eb;
+      letter-spacing: .2px;
+    }
+
+    .wp-spacer {
+      flex: 1;
+    }
+
+    .wp-username {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .wp-user-value {
+      font-weight: 500;
+      color: #e5e7eb;
+      cursor: pointer;
+    }
+
+    .wp-username-input {
+      display: none;
+      width: 120px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 12px;
+      padding: 0 6px;
+      outline: none;
+    }
+
+    .wp-username.editing .wp-user-value {
+      display: none;
+    }
+    .wp-username.editing .wp-username-input {
+      display: inline-block;
+    }
+
+    .wp-messages {
+      flex: 1;
+      padding: 8px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: radial-gradient(circle at top, #020617 0, #020617 100%);
+    }
+
+    .wp-messages::-webkit-scrollbar { width: 8px; }
+    .wp-messages::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 999px;
+    }
+
+    .wp-message {
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 8px;
+      padding: 4px 8px;
+      border-left: 3px solid rgba(148, 163, 184, 0.9);
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .wp-time {
+      color: #6b7280;
+      margin-right: 4px;
+    }
+
+    .wp-user {
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .wp-emote {
+      height: 20px;
+      vertical-align: -4px;
+      margin: 0 2px;
+    }
+
+    .wp-system {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .wp-composer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-top: 1px solid #1f2937;
+      background: #020617;
+    }
+
+    .wp-input {
+      flex: 1;
+      min-width: 0;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 0 10px;
+      outline: none;
+      font-size: 13px;
+    }
+
+    .wp-btn-send {
+      padding: 0 12px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid #16a34a;
+      background: #22c55e;
+      color: #022c22;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .wp-btn-send:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .wp-btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .wp-emote-popover {
+      position: absolute;
+      right: 20px;
+      bottom: 64px;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      padding: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+      min-width: 220px;
+      display: none;
+      z-index: 10;
+    }
+
+    .wp-emote-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .wp-emote-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+      gap: 6px;
+    }
+
+    .wp-emote-item {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .wp-emote-item img {
+      max-width: 28px;
+      max-height: 28px;
+    }
+
+    .room-footer-hint {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+
+    @media (max-width: 640px) {
+      .room-main {
+        padding: 10px;
+      }
+      #watchparty-shell {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="room-page">
+    <header class="room-header">
+      <div class="room-header-left">
+        <img src="assets/Logo.png" alt="WatchParty logo" class="room-logo">
+        <span class="room-title">WatchParty – Game Chat</span>
+      </div>
+      <div class="room-header-right">
+        <a href="index.html" class="cta-btn ghost" style="padding: 6px 12px; font-size: 0.8rem;">
+          ← Back to site
+        </a>
+      </div>
+    </header>
+
+    <main class="room-main">
+      <div class="room-meta">
+        <div>Room ID: <span id="room-id" class="room-id"></span></div>
+      </div>
+
+      <div class="room-layout">
+        <div id="watchparty-shell">
+          <div id="root"></div>
+        </div>
+        <div class="room-footer-hint">
+          Open the same game on ESPN / Peacock / Prime with the extension installed to see this chat as an overlay.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const roomId = params.get("room") || "";
+
+      const roomIdEl = document.getElementById("room-id");
+      if (!roomId) {
+        roomIdEl.textContent = "(missing)";
+      } else {
+        roomIdEl.textContent = roomId;
+      }
+
+      // Point directly at your Render server
+      const WS_BASE = "wss://watchparty-4u9v.onrender.com";
+
+      const DEFAULT_EMOTES = [
+        { code: "catJAM", url: "https://cdn.betterttv.net/emote/5f1b0186cf6d2144653d2970/2x" },
+        { code: "monkaS", url: "https://cdn.betterttv.net/emote/56e9f494fff3cc5c35e5287e/2x" },
+        { code: "OMEGALUL", url: "https://cdn.betterttv.net/emote/583089f4737a8e61abb0186b/2x" },
+        { code: "Clap", url: "https://cdn.betterttv.net/emote/55b6f480e66682f576dd94f5/2x" },
+        { code: "KEKW", url: "https://cdn.betterttv.net/emote/5e9c6c187e090362f8b0b9e8/2x" },
+        { code: "EZ", url: "https://cdn.betterttv.net/emote/5590b223b344e2c42a9e28e3/2x" },
+        { code: "POGGERS", url: "https://cdn.betterttv.net/emote/58ae8407ff7b7276f8e594f2/2x" },
+        { code: "PepeHands", url: "https://cdn.betterttv.net/emote/59f27b3f4ebd8047f54dee29/2x" },
+        { code: "pepeJAM", url: "https://cdn.betterttv.net/emote/5b77ac3af7bddc567b1d5fb2/2x" },
+        { code: "Sadge", url: "https://cdn.betterttv.net/emote/5df2e1e28a7cdd1d43675a3b/2x" }
+      ];
+
+      const EMOTE_KEY = "watchparty_emotes";
+
+      function getEmotes() {
+        try {
+          const raw = localStorage.getItem(EMOTE_KEY);
+          if (!raw) {
+            localStorage.setItem(EMOTE_KEY, JSON.stringify(DEFAULT_EMOTES));
+            return DEFAULT_EMOTES;
+          }
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        } catch {}
+        return DEFAULT_EMOTES;
+      }
+
+      function escapeRegex(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      function renderTextWithEmotes(text) {
+        const list = getEmotes();
+        if (!list.length) {
+          const span = document.createElement("span");
+          span.textContent = " " + text;
+          return span;
+        }
+        const safe = String(text).replace(/[&<>"']/g, (c) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+        }[c]));
+        let html = " " + safe;
+        for (const { code, url } of list) {
+          const re = new RegExp("\\b" + escapeRegex(code) + "\\b", "g");
+          html = html.replace(re, `<img class="wp-emote" src="${url}" alt="${code}" title="${code}">`);
+        }
+        const span = document.createElement("span");
+        span.innerHTML = html;
+        return span;
+      }
+
+      const root = document.getElementById("root");
+      if (!roomId) {
+        root.innerHTML = "<p class='wp-system' style='padding:12px;'>Missing ?room=… in the URL.</p>";
+        return;
+      }
+
+      // Build chat UI
+      root.innerHTML = `
+        <div id="watchparty-overlay">
+          <div class="wp-header">
+            <div class="wp-left">
+              <div class="wp-logo"></div>
+              <div class="wp-brand">WatchParty</div>
+            </div>
+            <div class="wp-spacer"></div>
+            <div class="wp-username" id="wp-username-view">
+              <span class="wp-user-value" id="wp-user-value"></span>
+              <input class="wp-username-input" id="wp-username-input" type="text" maxlength="32" />
+            </div>
+          </div>
+
+          <div id="wp-messages" class="wp-messages"></div>
+
+          <div class="wp-composer">
+            <button class="wp-btn-icon" id="wp-emote-btn" title="Emotes">😊</button>
+            <input id="wp-input" class="wp-input" type="text" placeholder="Send a message" autocomplete="off" />
+            <button class="wp-btn-send" id="wp-send">Send</button>
+          </div>
+
+          <div class="wp-emote-popover" id="wp-emote-pop">
+            <div class="wp-emote-head">
+              <span>Emotes</span>
+            </div>
+            <div class="wp-emote-grid" id="wp-emote-grid"></div>
+          </div>
+        </div>
+      `;
+
+      const messagesEl = document.getElementById("wp-messages");
+      const inputEl = document.getElementById("wp-input");
+      const sendBtn = document.getElementById("wp-send");
+      const emoteBtn = document.getElementById("wp-emote-btn");
+      const emotePop = document.getElementById("wp-emote-pop");
+      const emoteGrid = document.getElementById("wp-emote-grid");
+
+      const nameWrap = document.getElementById("wp-username-view");
+      const nameSpan = document.getElementById("wp-user-value");
+      const nameInput = document.getElementById("wp-username-input");
+
+      // Username from localStorage (shared between website + standalone rooms)
+      let username = localStorage.getItem("watchparty_username");
+      if (!username) {
+        username = "Guest" + Math.floor(Math.random() * 1000);
+        localStorage.setItem("watchparty_username", username);
+      }
+      nameSpan.textContent = username;
+
+      function commitUsername(newName) {
+        const val = (newName || "").trim().slice(0, 32);
+        if (!val) return;
+        username = val;
+        nameSpan.textContent = username;
+        localStorage.setItem("watchparty_username", username);
+      }
+
+      nameSpan.addEventListener("click", () => {
+        nameWrap.classList.add("editing");
+        nameInput.value = nameSpan.textContent.trim();
+        nameInput.focus();
+        nameInput.select();
+      });
+
+      nameInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") nameInput.blur();
+      });
+
+      nameInput.addEventListener("blur", () => {
+        const val = nameInput.value.trim();
+        if (val) commitUsername(val);
+        nameWrap.classList.remove("editing");
+      });
+
+      function addSystemMessage(text) {
+        const row = document.createElement("div");
+        row.className = "wp-message";
+        const span = document.createElement("span");
+        span.className = "wp-system";
+        span.textContent = text;
+        row.appendChild(span);
+        messagesEl.appendChild(row);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function addMessage(user, text, timestamp, color) {
+        const row = document.createElement("div");
+        row.className = "wp-message";
+        if (color) {
+          row.style.borderLeftColor = color;
+        }
+
+        const timeSpan = document.createElement("span");
+        timeSpan.className = "wp-time";
+        timeSpan.textContent = timestamp
+          ? "[" + new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + "]"
+          : "";
+
+        const userSpan = document.createElement("span");
+        userSpan.className = "wp-user";
+        userSpan.textContent = " " + user + ":";
+        if (color) userSpan.style.color = color;
+
+        row.appendChild(timeSpan);
+        row.appendChild(userSpan);
+        row.appendChild(renderTextWithEmotes(text));
+        messagesEl.appendChild(row);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function renderEmoteGrid() {
+        const list = getEmotes();
+        emoteGrid.innerHTML = "";
+        list.forEach(({ code, url }) => {
+          const item = document.createElement("div");
+          item.className = "wp-emote-item";
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = code;
+          img.title = code;
+          item.appendChild(img);
+          item.addEventListener("click", () => {
+            inputEl.value = (inputEl.value + " " + code).trimStart();
+            inputEl.focus();
+            emotePop.style.display = "none";
+          });
+          emoteGrid.appendChild(item);
+        });
+      }
+
+      emoteBtn.addEventListener("click", () => {
+        if (emotePop.style.display === "block") {
+          emotePop.style.display = "none";
+        } else {
+          renderEmoteGrid();
+          emotePop.style.display = "block";
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!emotePop.contains(e.target) && e.target !== emoteBtn) {
+          emotePop.style.display = "none";
+        }
+      });
+
+      let ws;
+      function connect() {
+        addSystemMessage("Connecting to room…");
+        ws = new WebSocket(WS_BASE + "/chat/" + encodeURIComponent(roomId));
+
+        ws.onopen = () => {
+          addSystemMessage("Connected. Say hi!");
+        };
+
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.type === "history" && Array.isArray(data.messages)) {
+            messagesEl.innerHTML = "";
+            data.messages.forEach((m) =>
+              addMessage(m.user, m.text, m.timestamp, m.color)
+            );
+          } else if (data.type === "chat") {
+            addMessage(data.user, data.text, data.timestamp, data.color);
+          }
+        };
+
+        ws.onclose = () => {
+          addSystemMessage("Disconnected from room. Trying again in a few seconds…");
+          setTimeout(connect, 3000);
+        };
+
+        ws.onerror = () => {
+          addSystemMessage("Connection error.");
+        };
+      }
+
+      connect();
+
+      function sendCurrentMessage() {
+        const text = inputEl.value.trim();
+        if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+        const msg = {
+          type: "chat",
+          user: username,
+          text,
+          timestamp: Date.now()
+        };
+        ws.send(JSON.stringify(msg));
+        inputEl.value = "";
+      }
+
+      sendBtn.addEventListener("click", sendCurrentMessage);
+      inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendCurrentMessage();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
