@@ -1,54 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ENYX7KSW1Z"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-ENYX7KSW1Z');
+    gtag("js", new Date());
+    gtag("config", "G-ENYX7KSW1Z");
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WatchParty - Live Chat for Live Sports</title>
-
   <meta name="description" content="Watch games together. Real-time chat overlay for ESPN, Peacock, and Prime Video.">
-
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="assets/Logo.png">
-
-  <!-- Open Graph / Social -->
   <meta property="og:title" content="WatchParty - Live Chat for Live Sports">
   <meta property="og:description" content="Turn any game into a watch party. Real-time chat overlay for ESPN, Peacock, and Prime Video.">
   <meta property="og:image" content="https://chathaaa.github.io/WatchParty-site/assets/Twitter-Card.png">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://chathaaa.github.io/WatchParty-site/">
-
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="WatchParty - Live Chat for Live Sports">
   <meta name="twitter:description" content="Twitch-style chat overlay for your favorite sports streams.">
   <meta name="twitter:image" content="https://chathaaa.github.io/WatchParty-site/assets/Twitter-Card.png">
   <meta name="twitter:image:alt" content="WatchParty chat overlay on a live sports stream">
 </head>
-
 <body>
   <div class="page">
-
-    <!-- HERO -->
     <header class="header">
-      <!-- Brand bar -->
       <div class="nav-bar">
         <div class="nav-left">
           <img src="assets/Logo.png" alt="WatchParty logo" class="nav-logo">
           <span class="nav-title">WatchParty</span>
         </div>
-        <a class="nav-link"  onclick="gtag('event', 'install_click', { event_category: 'extension', event_label: 'hero' })" href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">
+        <a class="nav-link" onclick="gtag('event', 'install_click', { event_category: 'extension', event_label: 'hero' })" href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">
           Add to Chrome
         </a>
       </div>
+
       <div class="hero">
         <div class="hero-copy">
           <h1 class="hero-title">Live chat for live sports!</h1>
@@ -58,7 +47,7 @@
           </p>
 
           <div class="hero-actions">
-            <a class="cta-btn primary"  onclick="gtag('event', 'install_click', { event_category: 'extension', event_label: 'hero' })" href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">
+            <a class="cta-btn primary" onclick="gtag('event', 'install_click', { event_category: 'extension', event_label: 'hero' })" href="https://chromewebstore.google.com/detail/watchparty-live-chat-for/emdmgnkkolfnbppnldpkcbdnbpglifla" target="_blank" rel="noopener">
               🚀 Add WatchParty to Chrome
             </a>
             <a class="cta-btn secondary" href="#how-it-works">
@@ -77,7 +66,7 @@
               src="assets/hero-overlay.png"
               alt="WatchParty chat overlay on a live sports stream"
               class="hero-img"
-            />
+            >
           </div>
           <p class="hero-caption">
             Example of WatchParty running on an Amazon Prime game.
@@ -86,7 +75,6 @@
       </div>
     </header>
 
-    <!-- LIVE GAMES (driven by app.js) -->
     <section class="section games" id="live-games">
       <div class="section-inner">
         <h2>Live games right now</h2>
@@ -99,7 +87,6 @@
       </div>
     </section>
 
-    <!-- HOW IT WORKS -->
     <section class="section how-it-works" id="how-it-works">
       <div class="section-inner">
         <h2>How it works</h2>
@@ -124,7 +111,6 @@
       </div>
     </section>
 
-    <!-- SUPPORTED SITES -->
     <section class="section supported">
       <div class="section-inner">
         <h2>Supported sites</h2>
@@ -143,7 +129,6 @@
       </div>
     </section>
 
-    <!-- WHY WATCHPARTY -->
     <section class="section why">
       <div class="section-inner">
         <h2>Why WatchParty?</h2>
@@ -171,7 +156,6 @@
       </div>
     </section>
 
-    <!-- COMMUNITY / FOOTER -->
     <section class="section community">
       <div class="section-inner">
         <h2>Join the early fans</h2>
@@ -179,7 +163,6 @@
           WatchParty is in early release. Help shape what it becomes.
         </p>
         <div class="community-actions">
-          <!-- Replace with your real Discord/feedback links when ready -->
           <a class="cta-btn secondary" href="https://discord.gg/D4z4cczr" target="_blank" rel="noopener">
             💬 Join the Discord
           </a>
@@ -195,26 +178,21 @@
     </footer>
   </div>
 
-  <!-- Feedback Modal -->
   <div id="feedback-modal" class="modal hidden">
     <div class="modal-content">
       <h3>Request a New Site</h3>
       <p class="modal-sub">
         Tell us what you'd like to see next in WatchParty.
       </p>
-
       <textarea id="feedback-text" class="modal-input" placeholder="Website support, feature requests, bugs, etc."></textarea>
-
       <div class="modal-actions">
         <button id="feedback-send" class="cta-btn primary">Send</button>
         <button id="feedback-close" class="cta-btn ghost">Cancel</button>
       </div>
-
       <p id="feedback-status" class="modal-status"></p>
     </div>
   </div>
 
   <script src="app.js"></script>
-
 </body>
 </html>
